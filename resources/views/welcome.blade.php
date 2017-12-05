@@ -19,6 +19,18 @@
       lat: -12.043333,
       lng: -77.028333
     });
+
+    map.addMarker({
+      lat: -12.043333,
+      lng: -77.028333,
+      title: 'Lima',
+      infoWindow: {
+      content: '<p>HTML Content</p>'
+    }      
+      // click: function(e) {
+      //   alert('You clicked in this marker');
+      // }
+    }); 
   </script>
 </body>
 </html>
