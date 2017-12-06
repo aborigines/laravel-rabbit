@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
 	public function index()
 	{
-		$results  = Twitter::getSearch(['q' => '#bangkok', 'count' => 100]);
+		$results  = Twitter::getSearch(['q' => 'bangkok', 'count' => 15 , 'result_type' => 'mixed']);
 
 		$datas = [];
 		foreach ($results->statuses as $result) {
