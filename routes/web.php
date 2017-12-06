@@ -10,14 +10,16 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 Route::get('/', 'HomeController@index');
 
 Route::get('/clear-cache', function() {
 	\Cache::flush();
 	echo "clear cache";
 });
+
+Route::get('/clear-cookie', function() {
+	\Cookie::queue(\Cookie::forget('city_search'));
+	echo "clear cookie";
+});
+
+Route::get('/history', 'HomeController@history');

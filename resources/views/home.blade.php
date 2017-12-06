@@ -3,6 +3,8 @@
 @section('title', 'Twitter\'s Search')
 
 @section('content')
+<h1>Tweet</h1>
+
 <form method="GET" action="{{ url('/') }}">
   <input type="text" name="city" id="city" value="{{ isset($city) ? $city : ''}}" required="true"/>
   <input type="submit" value="Search" class="btn btn-primary">

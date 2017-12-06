@@ -14,6 +14,16 @@
       width:50%;
       height:400px !important;
     }
+    ul, li {
+        list-style:none;
+        padding:0;
+        margin:0;
+        white-space:nowrap;
+        max-width:300px;
+        max-height: 100px;
+    }
+
+    ul{overflow-x:scroll;}
   </style>
 </head>
 <body>

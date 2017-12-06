@@ -4,39 +4,43 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cookie;
 use Twitter;
 
 class HomeController extends Controller
 {
 	public function index(Request $request)
 	{	
+		// pre set value
 		$city = '';
 		$latitude = 0;
 		$longitude = 0;
 
 		$resultCount = 0;
 		$lastId = null;
-		$numResults = 10;
-
-		$maxTimeCache = 60; // minutes
+		$numResults = 5;
 
 		$datas = [];
 
+		// check input
 		if ($request->has('city')) {
 		    $city = $request->city;
 
+		  //check cache
 			if(Cache::has($city)) {
 				$getCache = Cache::get($city);
 				$latitude = $getCache['latitude'];
 				$longitude = $getCache['longitude'];
 				$datas = $getCache['datas'];
 			} else {
+				// find latitude and longitude using city name
 				$findlatLong = $this->getLatLong($city);
 
 				$latitude = $findlatLong['latitude'];
 				$longitude = $findlatLong['longitude'];
 
-				$geoCode = sprintf('%f,%f,50km',$latitude,$longitude);
+				// set geocode for search
+				$geoCode = sprintf('%f,%f,%s',$latitude,$longitude,env('TWITTER_RADIUS_SEARCH','50km'));
 
 				while ($resultCount <= $numResults) {
 					$query  = Twitter::getSearch(
@@ -44,6 +48,7 @@ class HomeController extends Controller
 					);
 
 					foreach ($query->statuses as $result) {
+						// get result with geo is not null
 						if($result->geo != NULL) {
 							$datas[] = $result;
 							$resultCount++;
@@ -52,17 +57,27 @@ class HomeController extends Controller
 					}
 				}
 
+				// save search tweet to cache
 				Cache::put($city,[
 					'latitude' => $latitude,
 					'longitude' =>$longitude,
 					'datas' => $datas
-				], $maxTimeCache);
-				cookie('city_search', $city);
+				], env('TWITTER_CACHE_MINUTES', 60));
 			}
 		}
+
+		// save search history using cookie
+		$this->historyCookie($city);
+
 		return view("home", compact('latitude', 'longitude', 'datas', 'city'));
 	}
 
+	public function history()
+	{
+		$historyCity = app('request')->cookie('city_search');
+		return view('history', compact('historyCity'));
+	}
+	
 	protected function getLatLong($city)
 	{
 		$latitude = 0;
@@ -83,9 +98,29 @@ class HomeController extends Controller
 		return ['latitude' => $latitude, 'longitude' => $longitude];
 	}
 
-	public function history()
+	protected function historyCookie($city)
 	{
-		$city = cookie('city_search');
-		dump($city);
+		$cookieName = 'city_search';
+
+		// check cookie array
+		if ($cookieData = Cookie::get($cookieName)) {
+			if(!is_array($cookieData)) {
+				$data = [];
+				$data[] = $cookieData;
+			} else {
+				$data = $cookieData;
+			}
+			array_push($data, $city);
+		} else {
+			$data   = $city;
+		}
+
+		// covert to collection
+		$collection = collect($data);
+
+		// remove unique
+		$unique = $collection->unique();
+
+		Cookie::queue($cookieName,$unique->values()->all(), 9999);
 	}
 }
