@@ -16,3 +16,8 @@
 // });
 
 Route::get('/', 'HomeController@index');
+
+Route::get('/clear-cache', function() {
+	\Cache::flush();
+	echo "clear cache";
+});
