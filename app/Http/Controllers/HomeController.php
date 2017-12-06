@@ -57,6 +57,7 @@ class HomeController extends Controller
 					'longitude' =>$longitude,
 					'datas' => $datas
 				], $maxTimeCache);
+				cookie('city_search', $city);
 			}
 		}
 		return view("home", compact('latitude', 'longitude', 'datas', 'city'));
@@ -80,5 +81,11 @@ class HomeController extends Controller
 			$longitude = $output->results[0]->geometry->location->lng;
 		}
 		return ['latitude' => $latitude, 'longitude' => $longitude];
+	}
+
+	public function history()
+	{
+		$city = cookie('city_search');
+		dump($city);
 	}
 }
