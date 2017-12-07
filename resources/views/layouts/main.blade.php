@@ -11,7 +11,7 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <style type="text/css">
     #map {
-      width:50%;
+      /*width:50%;*/
       height:400px !important;
     }
     ul, li {

@@ -18,7 +18,7 @@ class HomeController extends Controller
 
 		$resultCount = 0;
 		$lastId = null;
-		$numResults = 5;
+		$numResults = 10;
 
 		$datas = [];
 

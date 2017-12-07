@@ -5,7 +5,7 @@
 @section('content')
 <h1>History</h1>
     <ul class="list-unstyled">
-      <a href="{{ url('/') }}"><li>< Back To Tweet</li></a>
+      <a href="{{ url('/') }}"><li>< Back To Twitter Search</li></a>
 
       @foreach($historyCity as $city)
       <li>{{ $city }}</li>
